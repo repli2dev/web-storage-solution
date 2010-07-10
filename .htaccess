@@ -18,3 +18,9 @@ Options -Indexes
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteRule !\.(pdf|js|ico|gif|jpg|png|css|rar|zip|tar\.gz)$ index.php [L]
 </IfModule>
+
+# Allow big files (can cause problems on some webhosts)
+php_value upload_max_filesize 1000M
+php_value post_max_size 1000M
+php_value max_execution_time 10000
+php_value max_input_time 10000

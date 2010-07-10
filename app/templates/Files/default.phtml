@@ -1,0 +1,41 @@
+{var pageTitle => "List of files"}
+
+{block #content}
+<h2>List of files</h2>
+
+<p><a class="add" href="{plink Files:add}" title="Add"><img src="{$basePath}/images/add.png" alt="Add" /> Add file</a></p>
+{if count($flashes) > 0}
+	{foreach $flashes as $flash}
+		<div class="{$flash->type}">{$flash->message}</div>
+	{/foreach}
+{/if}
+<table class="grid">
+	<thead>
+		<tr>
+			<th scope="col">Hash</th>
+			<th scope="col">Real name</th>
+			<th scope="col">Uploaded</th>
+			<th scope="col">Expire</th>
+			<th scope="col">Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{if count($data) > 0}
+			{foreach $data as $row}
+				<tr>
+					<td><a href="{plink Files:download, $row->hash}" title="Download">{$row->hash}</a></td>
+					<td>{$row->real_name}</td>
+					<td>{$row->uploaded|date:'j. n. Y | H:i '}</td>
+					<td>{$row->expire|date:'j. n. Y | H:i '}</td>
+					<td>
+						<a href="{plink Files:edit, $row->id}" title="Edit"><img src="{$basePath}/images/edit.png" alt="Edit" /></a>
+						<a href="{plink Files:remove, $row->id}" title="Remove"><img src="{$basePath}/images/remove.png" alt="Remove" /></a>
+					</td>
+				</tr>
+			{/foreach}
+		{/if}
+	</tbody>
+
+</table>
+
+{/block}

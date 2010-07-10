@@ -1,53 +1,57 @@
 <?php
 
 /**
- * My Application bootstrap file.
+ * Own storage web
  *
- * @copyright  Copyright (c) 2010 John Doe
- * @package    MyApplication
+ * @copyright  Copyright (c) 2010 Jan Drabek
+ * @package    Own storage web
  */
 
-
-
-// Step 1: Load Nette Framework
-// this allows load Nette Framework classes automatically so that
-// you don't have to litter your code with 'require' statements
+// Load Nette
 require LIBS_DIR . '/Nette/loader.php';
 
 
-
-// Step 2: Configure environment
-// 2a) enable Debug for better exception and error visualisation
-Debug::enable();
-
-// 2b) load configuration from config.ini file
+// Load config
 Environment::loadConfig();
 
 
+// Debugging?
+$debug = Environment::getConfig("debug");
 
-// Step 3: Configure application
-// 3a) get and setup a front controller
+if($debug->enable){
+	Debug::enable();
+}
+
 $application = Environment::getApplication();
 $application->errorPresenter = 'Error';
-//$application->catchExceptions = TRUE;
+$application->catchExceptions = Environment::isProduction() ? TRUE : FALSE;
 
+// Set encoding (server is probably cp1250)
+$httpResponse = Environment::getHttpResponse();
+$httpResponse ->setContentType( 'text/html' , 'UTF-8' ); 
 
-
-// Step 4: Setup application router
+// Settup basic routes
 $router = $application->getRouter();
 
 $router[] = new Route('index.php', array(
-	'presenter' => 'Homepage',
+	'presenter' => 'Files',
 	'action' => 'default',
 ), Route::ONE_WAY);
 
+$router[] = new Route('download/<hash>', array(
+	'presenter' => 'Files',
+	'action' => 'download',
+	'hash'	=> NULL
+));
+
 $router[] = new Route('<presenter>/<action>/<id>', array(
-	'presenter' => 'Homepage',
+	'presenter' => 'Files',
 	'action' => 'default',
 	'id' => NULL,
 ));
 
+// Connect to DB
+dibi::connect(Environment::getConfig('database'));
 
-
-// Step 5: Run the application!
+// Run the application
 $application->run();

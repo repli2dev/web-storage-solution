@@ -1,32 +1,77 @@
-body {
-	font: 16px/1.5 "Trebuchet MS", "Geneva CE", lucida, sans-serif;
-	color: #333;
-	background-color: #fff;
-}
-
 h1 {
-	font-size: 150%;
-	color: #165ca3;
+	color: #d16405;
+	width: 300px;
+	float: left;
+	height: 40px;
 }
 
-#ajax-spinner {
-	margin: 15px 0 0 15px;
-	padding: 13px;
-	background: white url('../images/spinner.gif') no-repeat 50% 50%;
-	font-size: 0;
-	z-index: 123456;
-	display: none;
+a {
+	color: #9fa92d;
 }
 
-div.flash {
-	color: black;
-	background: #FFF9D7;
-	border: 1px solid #E2C822;
-	padding: 1em;
-	margin: 1em 0;
+a:visited {
+	color: #798218;
 }
 
-a[href^="error:"] {
-	background: red;
+a:hover {
+	background: #d16505;
 	color: white;
+	text-decoration: none;
+}
+
+
+#menu {
+	position: absolute;
+	top: 68px;
+	width: 950px;
+	float: right;
+	text-align: right;
+}
+
+#menu a {
+	margin-left: 15px;
+	margin-right: 15px;
+	font-weight: bold;
+	text-decoration: none;
+	padding:2px;
+}
+#menu a:hover {
+	background: none;
+	border-top: 2px solid #d16505;
+	color: #d16505;
+}
+#menu a.highlight {
+	background: none;
+	border-top: 2px solid #9fa92d;
+}
+
+#footer {
+	padding-top: 20px;
+	clear: both;
+}
+ul.error,
+ul.notice,
+ul.success {
+	list-style: none;
+}
+table.grid th {
+	background: #ddd;
+}
+table.grid td {
+	border-bottom: 1px solid #ddd;
+}
+a.add {
+	line-height: 16px;
+}
+a.add img {
+	line-height: 16px;
+	vertical-align: middle;
+}
+.red {
+	color: red;
+}
+input.datetimepicker {
+      border: 1px solid #C0C0C0;
+      padding: 1.5pt 6pt 1.5pt 1.5pt;
+      background: transparent url('/images/calendar.png') no-repeat right;
 }
