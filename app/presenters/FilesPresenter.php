@@ -22,9 +22,9 @@ class FilesPresenter extends BasePresenter {
 	}
 
 	public function actionDownload($hash = NULL) {
-		if(!$this->canSee("files")){
-			$this->redirect("Users:login");
-		} else {
+		//if(!$this->canSee("files")){
+		//	$this->redirect("Users:login");
+		//} else {
 			if($hash != NULL){
 				$model = new FilesModel();
 				$data = $model->findByHash($hash)->fetchAll();
@@ -47,7 +47,7 @@ class FilesPresenter extends BasePresenter {
 			} else {
 				throw new BadRequestException();
 			}
-		}
+		//}
 	}
 
 	public function actionAdd() {
