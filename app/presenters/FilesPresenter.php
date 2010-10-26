@@ -104,26 +104,53 @@ class FilesPresenter extends BasePresenter {
 	// SIGNALS and HANDLERS
 
 	public function addFormSubmitted(Form $form) {
+		// Get values
 		$values = $form->getValues();
+		// Detach file
 		$file = $values["file"];
 		unset($values["file"]);
-		$user = Environment::getUser()->getIdentity()->id;
-		$values["user"] = $user;
-		$values["uploaded"] = new DateTime();
-
-		$model = new FilesModel();
-		$id = $model->add($values);
+		$incoming = $this->getIncomingFiles();
+		$fileIncoming = $incoming[$values["fileIncoming"]];
+		unset($values["fileIncoming"]);
 
 		$name = String::webalize($file->getName(),".");
 		$name = str_replace("..","",$name);
-		$values["real_name"] = $name;
-		$values["hash"] = md5($user.'_'.$id.'_'.$values['real_name']);
-		$file->move('./files/'.$values["hash"]);
-		$model->edit($id,$values);
-		
-		// Create message and redirect back
-		$this->flashMessage('File was successfully added.','success');
-		$this->redirect("default");
+
+		// Check if one file was provided
+		if(empty($fileIncoming) && empty($name)) {
+			$form->addError("Provide files one file to store (by uploading or selection).");
+		} else {
+			if(!empty($fileIncoming) && !empty($name)) {
+				$form->addError("You uploaded file as well you have selected one from incoming. Please select only one way of uploading!");
+				$form["fileIncoming"]->setValue();
+			} else {
+				$user = Environment::getUser()->getIdentity()->id;
+				$values["user"] = $user;
+				$values["uploaded"] = new DateTime();
+				$model = new FilesModel();
+				$id = $model->add($values);
+				if(empty($fileIncoming)) {
+					$values["real_name"] = $name;
+					$values["hash"] = md5($user.'_'.$id.'_'.$values['real_name']);
+					$file->move('./files/'.$values["hash"]);
+				} else {
+					$values["real_name"] = $fileIncoming;
+					$values["hash"] = md5($user.'_'.$id.'_'.$values['real_name']);
+					if(file_exists("./incoming/".$fileIncoming) && !is_dir("./incoming/".$fileIncoming)) {
+						rename("./incoming/".$fileIncoming,'./files/'.$values["hash"]);
+					} else {
+						$form->addError("Error when moving file from incoming, please check permissions.");
+						$model->delete($id);
+						return;
+					}
+				}
+				$model->edit($id,$values);
+				
+				// Create message and redirect back
+				$this->flashMessage('File was successfully added.','success');
+				$this->redirect("default");
+			}
+		}
 	}
 
 	public function editFormSubmitted(Form $form) {
@@ -199,6 +226,8 @@ class FilesPresenter extends BasePresenter {
 		$form = new BaseForm;
 		if($owner == "add") {
 			$form->addFile("file","File to store:");
+			$incoming = array(0 => "Choose file") + $this->getIncomingFiles();
+			$form->addSelect("fileIncoming","File from incoming: ",$incoming);
 		}
 
 		$form->addDateTimePicker('expire', 'Date and time of expiring:', 16, 16)
@@ -207,12 +236,26 @@ class FilesPresenter extends BasePresenter {
 		if($owner == "edit"){
 			$form->addSubmit("submitted", "Edit");
 		} else {
-			$form["file"]->addRule(Form::FILLED,"Select file to store.");
 			$form->addSubmit("submitted", "Add")
 				->getControlPrototype()->setId("uploadButton");
 
 		}
 		return $form;
+	}
+
+	private function getIncomingFiles() {
+		$files = array();
+		$i = 1;
+		if ($handle = opendir('./incoming/')) {
+			while (false !== ($file = readdir($handle))) {
+				if($file != "." && $file != ".." && $file != ".placeholder") {
+					$files[$i++] = $file;
+				}
+			}
+			closedir($handle);
+		}
+		uasort($files,"strcasecmp");
+		return $files;
 	}
 
 }
