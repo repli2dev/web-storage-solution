@@ -198,7 +198,14 @@ class FilesPresenter extends BasePresenter {
 	protected function prepareForm($owner = "add"){
 		$form = new BaseForm;
 		if($owner == "add") {
+			$uploadLimit = (int)(ini_get('upload_max_filesize'));
+			$postLimit = (int)(ini_get('post_max_size'));
+			$limit = min($postLimit, $uploadLimit);
 			$form->addFile("file","File to store:");
+			if ($uploadLimit !== false && $postLimit !== false && $limit > 0) {
+				$form['file']->setOption('description', "The file has to be smaller than $limit MB.");
+				$form['file']->addRule(Form::MAX_FILE_SIZE, "The file has to be smaller than $limit MB.", $limit * 1024 * 1024);
+			}
 		}
 
 		$form->addDateTimePicker('expire', 'Date and time of expiring:', 16, 16)
