@@ -1,0 +1,34 @@
+INSTALLATION
+------------------------------------------------------------------------------
+
+1. Upload all files except these to your web root:
+	* .gitignore
+	* resources/*
+	* nbproject/*
+
+2. Chmod these dirs to 777
+	* app/temp/	(and remove its content)
+	* app/log/
+	* files/	(create if this folder do not exists)
+	* incoming/	(create if this folder do not exists)
+
+3. Ensure that file /app/config.ini is not accessible from web!
+
+4. Connect to your database and create database with structure you find in 
+   resources/dump.sql file.
+
+5. Remove libs/Nette and libs/dibi and copy content of resources/minified/ to libs/
+
+6. Edit app/config.ini
+   Especially edit variable.key - put random string there (only a-z and A-Z and numbers)
+   Set credentials for DB connection just below [production < common] header.
+	database.host = "<address>"
+	database.username = "<name>"
+	database.password = "<password>"
+	database.database = "<name-of-database>"
+
+7. Put entry into crontab - call address http://<your-web-address>/files/maintainance?key=<variable-key-in-config-ini> This ensure removing of expired item!
+
+8. Now, your web is ready.
+
+   
