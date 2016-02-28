@@ -1,0 +1,43 @@
+{var pageTitle => "List of users"}
+
+{block #content}
+<h2>List of users</h2>
+
+<p><a class="add" href="{plink Users:add}" title="Add"><img src="{$basePath}/images/add.png" alt="Add" /> Add user</a></p>
+{if count($flashes) > 0}
+	{foreach $flashes as $flash}
+		<div class="{$flash->type}">{$flash->message}</div>
+	{/foreach}
+{/if}
+<table class="grid">
+	<thead>
+		<tr>
+			<th scope="col">ID</th>
+			<th scope="col">Username</th>
+			<th scope="col">Role</th>
+			<th scope="col">Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{if count($data) > 0}
+			{foreach $data as $row}
+				<tr>
+					<td>{$row->id}</td>
+					<td>{$row->username}</td>
+					<td>{$row->role}</td>
+					<td>
+						{if $row->id != 1}
+							<a href="{plink Users:edit, $row->id}" title="Edit"><img src="{$basePath}/images/edit.png" alt="Edit" /></a>
+							<a href="{plink Users:remove, $row->id}" title="Remove"><img src="{$basePath}/images/remove.png" alt="Remove" /></a>
+						{else}
+							Unchangable
+						{/if}
+					</td>
+				</tr>
+			{/foreach}
+		{/if}
+	</tbody>
+
+</table>
+
+{/block}

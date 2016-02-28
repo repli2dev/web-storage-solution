@@ -1,11 +1,9 @@
 <?php
+namespace App\Presenters;
 
-/**
- * Error presenter.
- *
- * @author     Jan Drabek
- * @package    Own storage web
- */
+use Nette\Application\BadRequestException;
+use Tracy\Debugger;
+
 class ErrorPresenter extends BasePresenter
 {
 
@@ -24,7 +22,7 @@ class ErrorPresenter extends BasePresenter
 
 		} else {
 			$this->setView('500'); // load template 500.phtml
-			Debug::processException($exception); // and handle error by Debug
+			Debugger::log($exception); // and handle error by Debug
 		}
 	}
 

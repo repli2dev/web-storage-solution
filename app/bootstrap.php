@@ -1,57 +1,20 @@
 <?php
 
-/**
- * Own storage web
- *
- * @copyright  Copyright (c) 2010 Jan Drabek
- * @package    Own storage web
- */
+require __DIR__ . '/../vendor/autoload.php';
 
-// Load Nette
-require LIBS_DIR . '/Nette/loader.php';
+$configurator = new Nette\Configurator;
 
+$configurator->enableDebugger(__DIR__ . '/../log');
 
-// Load config
-Environment::loadConfig();
+$configurator->setTempDirectory(__DIR__ . '/../temp');
 
+$configurator->createRobotLoader()
+	->addDirectory(__DIR__)
+	->register();
 
-// Debugging?
-$debug = Environment::getConfig("debug");
+$configurator->addConfig(__DIR__ . '/config/config.neon');
+$configurator->addConfig(__DIR__ . '/config/config.local.neon');
 
-if($debug->enable){
-	Debug::enable();
-}
+$container = $configurator->createContainer();
 
-$application = Environment::getApplication();
-$application->errorPresenter = 'Error';
-$application->catchExceptions = Environment::isProduction() ? TRUE : FALSE;
-
-// Set encoding (server is probably cp1250)
-$httpResponse = Environment::getHttpResponse();
-$httpResponse ->setContentType( 'text/html' , 'UTF-8' ); 
-
-// Settup basic routes
-$router = $application->getRouter();
-
-$router[] = new Route('index.php', array(
-	'presenter' => 'Files',
-	'action' => 'default',
-), Route::ONE_WAY);
-
-$router[] = new Route('download/<hash>', array(
-	'presenter' => 'Files',
-	'action' => 'download',
-	'hash'	=> NULL
-));
-
-$router[] = new Route('<presenter>/<action>/<id>', array(
-	'presenter' => 'Files',
-	'action' => 'default',
-	'id' => NULL,
-));
-
-// Connect to DB
-dibi::connect(Environment::getConfig('database'));
-
-// Run the application
-$application->run();
+return $container;

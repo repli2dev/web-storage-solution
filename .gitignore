@@ -1,1 +1,3 @@
-app/temp/*
+/temp/*
+/vendor/*
+/app/config/config.local.neon

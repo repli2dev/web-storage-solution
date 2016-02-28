@@ -1,0 +1,41 @@
+#
+# WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
+# https://nette.org/security-warning
+#
+parameters:
+	web:
+		defaultTitle: "Web storage solution"
+		description: "Store fill on own web storage, set expiration and send links to share with friends. File will vanish after expiring ;-)"
+		keywords: "share, upload, files, big files, expire, cron, deletation, storage, web"
+		robots: "follow, index"
+	variable:
+		lang: en
+		key: 99d120d88w69df5f8s8wfrf	# key for cron authentication, change in config.local.neon!
+
+php:
+	date.timezone: Europe/Prague
+
+
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
+
+
+session:
+	expiration: 14 days
+
+dibi:
+	host: localhost
+	database: osw
+	user: root
+	password:
+
+services:
+	- App\Model\Users
+	- App\Model\Files
+	- App\Model\Permissions
+	router: App\RouterFactory::createRouter
+
+extensions:
+	dibi: Dibi\Bridges\Nette\DibiExtension22

@@ -1,0 +1,81 @@
+{**
+ * 
+ * Own storage web
+ * @copyright  Copyright (c) 2010 Jan Drabek
+ * @package    Own storage web
+ *
+ * @param string   $basePath web base path
+ * @param string   $robots   tell robots how to index the content of a page (optinal)
+ * @param array    $flashes  flash messages
+ *}
+{dump $web}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<meta name="description" content="{$web['description']}">
+	<meta name="keywords" content="{$web['keywords']}">
+	<meta name="robots" content="{$web['robots']}" n:ifset="$web['robots']">
+
+	<title>{ifset $pageTitle}{$pageTitle} | {/ifset}{$web['defaultTitle']}</title>
+
+	<link rel="stylesheet" href="/css/blueprint/screen.css"   type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="/css/blueprint/print.css" type="text/css" media="print">
+	<!--[if IE]><link rel="stylesheet" href="/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+
+	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css" type="text/css">
+
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/blitzer/jquery-ui.css" type="text/css" />
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+	<script type="text/javascript" src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
+	<?php $unique_id = uniqid(""); ?>
+	<script type="text/javascript">
+		  <!-- <![CDATA[
+		    $(document).ready(function()
+		    {
+		      $('input.datetimepicker').datepicker(
+		      {
+			duration: '',
+			changeMonth: true,
+			changeYear: true,
+			yearRange: '2007:2020',
+			showTime: true,
+			time24h: true,
+			currentText: 'Today',
+			closeText: 'OK'
+		      });
+		    });
+		  //]]> -->
+	</script>
+</head>
+
+<body>
+	<div class="container">
+		<hr />
+			<h1>{$web['defaultTitle']}</h1>
+		<hr />
+
+		<div id="menu" class="large">
+			{if !$presenter->canSee("users") && !$presenter->canSee("files")}<a {ifCurrent Users:login}class="highlight"{/ifCurrent} href="/">Úvod</a>{/if}
+
+			{if $presenter->canSee("files")}<a {ifCurrent Files:*}class="highlight"{/ifCurrent} href="{plink Files:}">Files</a>{/if}
+			{if $presenter->canSee("users")}<a {ifCurrent Users:*}class="highlight"{/ifCurrent} href="{plink Users:}">Users</a>{/if}
+			{if $presenter->canSee("users") || $presenter->canSee("files")}<a {ifCurrent Users:password}class="highlight"{/ifCurrent} href="{plink Users:password}">Change password</a>{/if}
+			{if $presenter->canSee("users") || $presenter->canSee("files")}<a href="{plink Users:logout}">Logout</a>{/if}
+		</div>
+		<hr class="space clear">
+
+		<div class="span-24">
+			{block #content}
+				
+			{/block}
+		</div>
+		<div class="clear" id="footer">
+			&copy; 2016 Jan Drabek
+		</div>
+		<hr />
+	</div>
+
+</body>
+</html>
