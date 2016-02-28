@@ -22,5 +22,3 @@
 7. Put entry into crontab - call address http://<your-web-address>/files/maintenance?key=<variable-key-in-config-neon> This ensure removing of expired item!
 
 8. Now, your web is ready.
-
-   
